@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        java: [ 8, 8.0.192, 9.0.x, 10, 11.0.x, 11.0.3, 12, 13 ]
+        java: [8, 9, 10, 11, 12, 13, 14, 15]
     name: Java ${{ matrix.java }} Build
     steps:
       - name: Linux kernel version check
