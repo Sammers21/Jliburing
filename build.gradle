@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+        }
+    }
+}
+
+// Generate JNI headers
+task generateJniHeaders(type: JavaCompile) {
+    classpath = sourceSets.main.compileClasspath
+    destinationDir file("${buildDir}/useless/jni")
+    source = sourceSets.main.java
+    options.compilerArgs += [ '-h', file("src/jni")]
+    doLast {
+        delete file("${buildDir}/useless/jni")
+    }
+}
+
+// Generate shared(.so) lib
+task compileJni(type: Exec) {
+    dependsOn { generateJniHeaders }
+    commandLine 'make', 'compileJNI'
+}
+
+assemble {
+    dependsOn compileJni
+}
