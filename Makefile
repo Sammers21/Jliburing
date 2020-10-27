@@ -35,3 +35,5 @@ compileJNI: liburing
 		-L./build/liburing/src/ \
 		-o build/jni/liblb.so build/jni/Lib.o \
 		-lc  ${CCFLAGS}
+	# VS CODE Specific
+	cp build/jni/liblb.so liblb.so

@@ -6,3 +6,4 @@ bin/
 *.h
 .classpath
 .project
+liblb.so

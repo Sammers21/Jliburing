@@ -2,10 +2,27 @@ plugins {
     id 'java'
 }
 
+repositories{
+    mavenCentral()
+}
+
+dependencies {
+    implementation "io.reactivex.rxjava3:rxjava:3.0.7"
+    implementation "org.javatuples:javatuples:1.2"
+    testCompile "junit:junit:4.11"
+}
+
 sourceSets {
     main {
         java {
             srcDir 'src/java'
+            exclude "**/*Test.java"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/java'
+            include "**/*Test.java"
         }
     }
 }
