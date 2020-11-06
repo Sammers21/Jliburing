@@ -1,7 +1,6 @@
 package io.github.sammers21.jliburing;
 
 import java.nio.ByteBuffer;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 

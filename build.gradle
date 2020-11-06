@@ -22,7 +22,6 @@ sourceSets {
     test {
         java {
             srcDir 'src/java'
-            include "**/*Test.java"
         }
     }
 }
