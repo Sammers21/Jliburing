@@ -35,7 +35,12 @@ off_t get_file_size(int fd)
     return -1;
 }
 
-JNIEXPORT jobject JNICALL Java_Lib_read_1ten_1bytes(JNIEnv *env, jobject obj, jstring fname)
+/*
+ * Class:     io_github_sammers21_jliburing_IOUring
+ * Method:    read_ten_bytes
+ * Signature: (Ljava/lang/String;)Ljava/nio/ByteBuffer;
+ */
+JNIEXPORT jobject JNICALL Java_io_github_sammers21_jliburing_IOUring_read_1ten_1bytes(JNIEnv *env, jobject obj, jstring fname)
 {
     const char *cfname = env->GetStringUTFChars(fname, 0);
     int fd = open(cfname, O_RDONLY);
@@ -58,7 +63,13 @@ JNIEXPORT jobject JNICALL Java_Lib_read_1ten_1bytes(JNIEnv *env, jobject obj, js
     return env->NewDirectByteBuffer(buf, fsize);
 }
 
-JNIEXPORT jobject JNICALL Java_Lib_io_1uring_1read(JNIEnv *env, jobject zhis, jstring fname)
+
+/*
+ * Class:     io_github_sammers21_jliburing_IOUring
+ * Method:    io_uring_read
+ * Signature: (Ljava/lang/String;)Ljava/nio/ByteBuffer;
+ */
+JNIEXPORT jobject JNICALL Java_io_github_sammers21_jliburing_IOUring_io_1uring_1read(JNIEnv *env, jobject zhis, jstring fname)
 {
 
     const char *cfname = env->GetStringUTFChars(fname, 0);
@@ -90,8 +101,18 @@ JNIEXPORT jobject JNICALL Java_Lib_io_1uring_1read(JNIEnv *env, jobject zhis, js
         exit(res);
     }
     char *gragain = (char*)io_uring_cqe_get_data(cqe);
-    fprintf( stderr, "GRAGAIN %s", gragain );
     return env->NewDirectByteBuffer(buf, fsize);
+}
+
+/*
+ * Class:     io_github_sammers21_jliburing_IOUring
+ * Method:    read0
+ * Signature: (Ljava/lang/String;II)V
+ */
+JNIEXPORT void JNICALL Java_io_github_sammers21_jliburing_IOUring_read0
+  (JNIEnv *env, jobject zthis, jstring fname, jint size, jint offset){
+    const char *cfname = env->GetStringUTFChars(fname, 0);
+    int fd = open(cfname, O_RDONLY);
 }
 
 
@@ -102,5 +123,15 @@ JNIEXPORT jobject JNICALL Java_Lib_io_1uring_1read(JNIEnv *env, jobject zhis, js
  */
 JNIEXPORT jobject JNICALL Java_Lib_io_1uring_1read_1efd
   (JNIEnv *env, jobject zthis, jstring fname){
+  
+}
+
+/*
+ * Class:     io_github_sammers21_jliburing_IOUring
+ * Method:    ring_init
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_io_github_sammers21_jliburing_IOUring_ring_1init
+  (JNIEnv *env, jobject zthis){
   
 }

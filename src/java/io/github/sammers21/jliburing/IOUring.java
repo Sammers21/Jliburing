@@ -13,12 +13,14 @@ public class IOUring {
         System.load("/home/sammers/Jliburing/liblb.so");
     }
 
+    private final Integer ring_address;
     private final Thread evloop;
     private final ConcurrentMap<String, SingleEmitter<ByteBuffer>> completionsMap = new ConcurrentHashMap<>();
 
     public IOUring() {
         this.evloop = new Thread(this::evloop);
         evloop.start();
+        this.ring_address = ring_init();
     }
 
     Single<ByteBuffer> read(String fname, int size, int offset) {
@@ -28,6 +30,7 @@ public class IOUring {
         });
     }
 
+
     public native ByteBuffer read_ten_bytes(String fname);
 
     public native ByteBuffer io_uring_read(String fname);
@@ -35,6 +38,8 @@ public class IOUring {
     public native void read0(String fname, int size, int offset);
 
     public native CQE wait_cqe();
+
+    private native int ring_init();
 
     public static void main(String[] args) {
         System.out.println("Hello world");
