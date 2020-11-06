@@ -28,7 +28,8 @@ compileJNI: liburing
 		-I${JAVA_HOME}/include/linux \
 		-I./build/liburing/src/include/ \
 		-L./build/liburing/src/ \
-		src/jni/Lib.cpp -o build/jni/Lib.o \
+		src/jni/io_github_sammers21_jliburing_IOUring.cpp \
+		-o build/jni/Lib.o \
 		${CCFLAGS}
 	$(CC) -shared -fPIC \
 	 	-I./build/liburing/src/include/ \
