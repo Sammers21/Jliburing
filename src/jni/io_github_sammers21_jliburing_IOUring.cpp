@@ -10,6 +10,8 @@
 #include <sys/ioctl.h>
 #include <liburing.h>
 
+#define GET_RING(env, self) (struct io_uring*)(*env)->GetLongField(env, self, ring_fid)
+
 off_t get_file_size(int fd)
 {
     struct stat st;
@@ -111,6 +113,7 @@ JNIEXPORT jobject JNICALL Java_io_github_sammers21_jliburing_IOUring_io_1uring_1
  */
 JNIEXPORT void JNICALL Java_io_github_sammers21_jliburing_IOUring_read0
   (JNIEnv *env, jobject zthis, jstring fname, jint size, jint offset){
+    env->GetFieldID(zthis,"ring", "J");
     const char *cfname = env->GetStringUTFChars(fname, 0);
     int fd = open(cfname, O_RDONLY);
 }
@@ -129,9 +132,12 @@ JNIEXPORT jobject JNICALL Java_Lib_io_1uring_1read_1efd
 /*
  * Class:     io_github_sammers21_jliburing_IOUring
  * Method:    ring_init
- * Signature: ()I
+ * Signature: ()J
  */
-JNIEXPORT jint JNICALL Java_io_github_sammers21_jliburing_IOUring_ring_1init
+JNIEXPORT jlong JNICALL Java_io_github_sammers21_jliburing_IOUring_ring_1init
   (JNIEnv *env, jobject zthis){
-  
+    struct io_uring rring;
+    int res = io_uring_queue_init(100, &rring, 0);
+    long addr = (long)&rring;
+    return addr;
 }

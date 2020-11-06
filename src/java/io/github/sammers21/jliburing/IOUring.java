@@ -1,5 +1,7 @@
 package io.github.sammers21.jliburing;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -7,31 +9,36 @@ import java.util.concurrent.ConcurrentMap;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleEmitter;
 
-public class IOUring {
+public class IOUring implements Closeable {
 
     static {
         System.load("/home/sammers/Jliburing/liblb.so");
     }
 
-    private final Integer ring_address;
+    private final Long ringAddress;
+    private final int queueDepth;
+    private final long flags;
     private final Thread evloop;
-    private final ConcurrentMap<String, SingleEmitter<ByteBuffer>> completionsMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, SingleEmitter<ByteBuffer>> completionsMap;
 
-    public IOUring() {
+    public IOUring(int queueDepth, int flags) {
+        this.ringAddress = ring_init(queueDepth, flags);
+        this.queueDepth = queueDepth;
+        this.flags = flags;
         this.evloop = new Thread(this::evloop);
-        evloop.start();
-        this.ring_address = ring_init();
+        this.completionsMap = new ConcurrentHashMap<>();
     }
 
-    Single<ByteBuffer> read(String fname, int size, int offset) {
+    public IOUring() {
+        this(100, 0);
+    }
+
+    public Single<ByteBuffer> read(String fname, int size, int offset) {
         return Single.create(emitter -> {
             completionsMap.put(fname + size + offset, emitter);
             this.read0(fname, size, offset);
         });
     }
-
-
-    public native ByteBuffer read_ten_bytes(String fname);
 
     public native ByteBuffer io_uring_read(String fname);
 
@@ -39,17 +46,14 @@ public class IOUring {
 
     public native CQE wait_cqe();
 
-    private native int ring_init();
-
-    public static void main(String[] args) {
-        System.out.println("Hello world");
-        ByteBuffer read_ten_bytes = new IOUring().io_uring_read("Makefile");
-        final byte[] bytes = new byte[read_ten_bytes.remaining()];
-        read_ten_bytes.get(bytes);
-        System.out.println("Hello world\n" + new String(bytes));
-    }
+    private native long ring_init(int queueDepth, int flags);
 
     private void evloop() {
+
+    }
+
+    @Override
+    public void close() throws IOException {
 
     }
 }
