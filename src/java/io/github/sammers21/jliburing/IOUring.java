@@ -33,20 +33,19 @@ public class IOUring implements Closeable {
         this(100, 0);
     }
 
+
+    public native ByteBuffer io_uring_read(String fname);
+    public native void read0(String fname, int size, int offset);
+    private native CQE wait_cqe();
+    private native long ring_init(int queueDepth, int flags);
+    private native void close0();
+
     public Single<ByteBuffer> read(String fname, int size, int offset) {
         return Single.create(emitter -> {
             completionsMap.put(fname + size + offset, emitter);
             this.read0(fname, size, offset);
         });
     }
-
-    public native ByteBuffer io_uring_read(String fname);
-
-    public native void read0(String fname, int size, int offset);
-
-    public native CQE wait_cqe();
-
-    private native long ring_init(int queueDepth, int flags);
 
     private void evloop() {
 
